@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commande Plan 3D — Brief Client</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1612;
+    --paper: #f7f4ef;
+    --cream: #ede9e1;
+    --accent: #c8622a;
+    --accent-light: #f0ddd2;
+    --muted: #8a8178;
+    --border: #d8d2c8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.15;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.08;
+  }
+
+  .header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: var(--paper);
+  }
+
+  header h1 em {
+    font-style: italic;
+    color: #e8a882;
+  }
+
+  header p {
+    font-size: 15px;
+    color: #b0a99e;
+    line-height: 1.7;
+    max-width: 500px;
+  }
+
+  /* STEPS NAV */
+  .steps-nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+  }
+
+  .steps-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+  }
+
+  .step-tab {
+    padding: 16px 20px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .step-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .step-tab.done {
+    color: var(--ink);
+  }
+
+  .step-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .step-tab.active .step-num {
+    background: var(--accent);
+    color: white;
+  }
+
+  .step-tab.done .step-num {
+    background: var(--ink);
+    color: white;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    animation: fadeUp 0.35s ease forwards;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  /* FIELDS */
+  .field {
+    margin-bottom: 28px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  label .required {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  label .hint {
+    font-weight: 300;
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8178' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  /* RADIO CARDS */
+  .radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .radio-card input { display: none; }
+
+  .radio-card label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    transition: all 0.2s;
+    margin: 0;
+    letter-spacing: 0;
+  }
+
+  .radio-card label .icon {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .radio-card input:checked + label {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .radio-card label:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+
+  /* CHECKBOX */
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .checkbox-item:hover { border-color: var(--accent); }
+
+  .checkbox-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .checkbox-item span {
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* FILE UPLOAD */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 32px 24px;
+    text-align: center;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .upload-icon { font-size: 32px; margin-bottom: 10px; }
+
+  .upload-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .file-list {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .file-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .file-tag span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .file-remove {
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+  }
+  .file-remove:hover { color: var(--accent); }
+
+  /* TWO COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .info-box strong { font-weight: 500; }
+
+  /* NAVIGATION BUTTONS */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(200,98,42,0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .btn-submit {
+    background: var(--accent);
+    color: white;
+    padding: 16px 36px;
+    font-size: 15px;
+  }
+
+  .btn-submit:hover {
+    background: #b8521a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200,98,42,0.35);
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.4s ease;
+  }
+
+  /* SUCCESS */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    background: var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    font-size: 28px;
+  }
+
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px;
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto 32px;
+  }
+
+  .recap-box {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: left;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .recap-box h3 {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .recap-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream);
+    font-size: 14px;
+  }
+
+  .recap-line:last-child { border-bottom: none; }
+  .recap-line span:first-child { color: var(--muted); }
+  .recap-line span:last-child { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">Brief Client</div>
+    <h1>Votre plan 3D<br><em>commence ici.</em></h1>
+    <p>Remplissez ce formulaire en 5 minutes. Je m'occupe du reste — vous recevez vos visuels sous 5 à 10 jours ouvrés.</p>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+</div>
+
+<div class="steps-nav">
+  <div class="steps-inner">
+    <div class="step-tab active" id="tab-1">
+      <div class="step-num">1</div> Votre bien
+    </div>
+    <div class="step-tab" id="tab-2">
+      <div class="step-num">2</div> Plans & mesures
+    </div>
+    <div class="step-tab" id="tab-3">
+      <div class="step-num">3</div> Style & photos
+    </div>
+    <div class="step-tab" id="tab-4">
+      <div class="step-num">4</div> Contact
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- SECTION 1 : Le bien -->
+  <section class="section active" id="section-1">
+    <h2 class="section-title">Votre logement</h2>
+    <p class="section-desc">Quelques infos pour choisir le bon pack et estimer le délai.</p>
+
+    <div class="field">
+      <label>Type de bien <span class="required">*</span></label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" name="type_bien" id="studio" value="Studio" onchange="toggleGroupeFields(false)">
+          <label for="studio"><span class="icon">🏠</span> Studio</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="type_bien" id="t2" value="T2" onchange="toggleGroupeFields(false)">
+          <label for="t2"><span class="icon">🛏</span> T2</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="type_bien" id="t3" value="T3" onchange="toggleGroupeFields(false)">
+          <label for="t3"><span class="icon">🛏🛏</span> T3</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="type_bien" id="t4" value="T4+" onchange="toggleGroupeFields(false)">
+          <label for="t4"><span class="icon">🏡</span> T4+</label>
+        </div>
+        <div class="radio-card" style="grid-column: 1 / -1;">
+          <input type="radio" name="type_bien" id="groupe" value="Demande groupée" onchange="toggleGroupeFields(true)">
+          <label for="groupe" style="flex-direction:row; justify-content:center; gap:10px;"><span class="icon">🏘️</span> <span><strong>Plusieurs biens</strong> — demande groupée <span style="color:var(--accent);font-size:11px;font-weight:500;">SUR DEVIS</span></span></label>
+        </div>
+      </div>
+      <div id="groupe-notice" style="display:none; margin-top:12px;" class="info-box">
+        📩 <strong>Demande groupée — sur devis.</strong> Indiquez le nombre de biens et leurs types dans le champ ci-dessous. Je vous envoie une offre dédiée sous 24h avec une remise selon le volume.
+      </div>
+    </div>
+
+    <div id="groupe-detail-field" style="display:none;" class="field">
+      <label for="groupe_detail">Décrivez vos biens <span class="required">*</span> <span class="hint">nombre, types, surfaces approximatives</span></label>
+      <textarea id="groupe_detail" placeholder="ex : 3 T2 d'environ 40m² chacun + 1 T4 de 90m² — tous situés à Lyon..."></textarea>
+    </div>
+
+    <div id="single-bien-fields">
+    <div class="two-col">
+      <div class="field">
+        <label for="surface">Surface approximative <span class="required">*</span> <span class="hint">en m²</span></label>
+        <input type="number" id="surface" placeholder="ex : 45" min="10" max="500">
+      </div>
+      <div class="field">
+        <label for="nb_chambres">Nombre de chambres <span class="required">*</span></label>
+        <select id="nb_chambres">
+          <option value="">— Sélectionner</option>
+          <option>0 (studio)</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4+</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="nb_niveaux">Le logement est-il sur plusieurs niveaux ?</label>
+      <select id="nb_niveaux">
+        <option value="non">Non, un seul niveau</option>
+        <option value="duplex">Oui, duplex (2 niveaux)</option>
+        <option value="triplex">Oui, triplex (3 niveaux)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Pièces présentes <span class="hint">cochez tout ce qui s'applique</span></label>
+      <div class="checkbox-group">
+        <label class="checkbox-item"><input type="checkbox" value="salon"> <span>Salon / séjour</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="cuisine"> <span>Cuisine (séparée ou ouverte)</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="sdb"> <span>Salle de bain</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="wc"> <span>WC séparé</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="bureau"> <span>Bureau / espace de travail</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="terrasse"> <span>Terrasse / balcon</span></label>
+        <label class="checkbox-item"><input type="checkbox" value="cave"> <span>Cave / buanderie</span></label>
+      </div>
+    </div>
+    </div>
+
+    <div class="nav-buttons">
+      <span></span>
+      <button class="btn btn-primary" onclick="goTo(2)">Continuer →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 2 : Plans & mesures -->
+  <section class="section" id="section-2">
+    <h2 class="section-title">Plans & mesures</h2>
+    <p class="section-desc">C'est la base de tout. Plus vos mesures sont précises, plus le plan 3D sera fidèle à la réalité.</p>
+
+    <div class="info-box">
+      <strong>Pas de plan officiel ?</strong> Pas de problème. Prenez simplement les photos de chaque mur avec un mètre ou posez votre téléphone en mode mètre laser. Je m'adapte.
+    </div>
+
+    <div class="field">
+      <label>Avez-vous un plan existant ? <span class="required">*</span></label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" name="plan_existant" id="plan_oui" value="oui">
+          <label for="plan_oui"><span class="icon">📄</span> Oui, j'ai un plan PDF</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="plan_existant" id="plan_photo" value="photo">
+          <label for="plan_photo"><span class="icon">📐</span> J'ai des cotes en photo</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="plan_existant" id="plan_non" value="non">
+          <label for="plan_non"><span class="icon">✏️</span> Je vais les relever</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Uploader votre plan ou vos cotes <span class="hint">PDF, JPG, PNG — 20 Mo max</span></label>
+      <div class="upload-zone" id="uploadPlan">
+        <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple onchange="handleFiles(this, 'planFiles', 'planList')">
+        <div class="upload-icon">📁</div>
+        <div class="upload-label">Cliquez ou glissez vos fichiers ici</div>
+        <div class="upload-hint">Plan PDF du bail, cotes photographiées, croquis scanné...</div>
+      </div>
+      <div class="file-list" id="planList"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="field">
+      <label for="instructions_mesures">Instructions spéciales ou précisions sur le logement <span class="hint">optionnel</span></label>
+      <textarea id="instructions_mesures" placeholder="ex : La cuisine est en L, il y a une mezzanine dans la chambre principale, la salle de bain est accessible depuis le couloir uniquement..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Retour</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Continuer →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 3 : Style & photos -->
+  <section class="section" id="section-3">
+    <h2 class="section-title">Style & photos</h2>
+    <p class="section-desc">Pour que les meubles du plan 3D ressemblent à votre logement réel.</p>
+
+    <div class="field">
+      <label>Style d'ameublement du logement <span class="required">*</span></label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_moderne" value="Moderne / épuré">
+          <label for="style_moderne"><span class="icon">⬜</span> Moderne / épuré</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_scandi" value="Scandinave">
+          <label for="style_scandi"><span class="icon">🌿</span> Scandinave</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_indus" value="Industriel">
+          <label for="style_indus"><span class="icon">🔩</span> Industriel</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_classi" value="Classique / haussmannien">
+          <label for="style_classi"><span class="icon">🏛</span> Classique</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_boheme" value="Bohème / coloré">
+          <label for="style_boheme"><span class="icon">🎨</span> Bohème</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="style" id="style_autre" value="Autre">
+          <label for="style_autre"><span class="icon">✨</span> Autre</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Photos de chaque pièce <span class="required">*</span> <span class="hint">JPG ou PNG, 1 à 3 photos par pièce</span></label>
+      <div class="upload-zone">
+        <input type="file" accept=".jpg,.jpeg,.png,.webp" multiple onchange="handleFiles(this, 'photoFiles', 'photoList')">
+        <div class="upload-icon">📸</div>
+        <div class="upload-label">Uploader les photos du logement</div>
+        <div class="upload-hint">Prenez au moins 1 photo par pièce depuis l'angle le plus large possible</div>
+      </div>
+      <div class="file-list" id="photoList"></div>
+    </div>
+
+    <div class="field">
+      <label>Choisissez votre pack <span class="required">*</span></label>
+      <div class="radio-group" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="radio-card">
+          <input type="radio" name="pack" id="pack_s" value="Pack S">
+          <label for="pack_s"><span class="icon">🏠</span> <strong>Pack S</strong><br><small style="font-weight:300;font-size:11px;">Studio / T2<br>Vue top + 3 angles</small></label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="pack" id="pack_m" value="Pack M">
+          <label for="pack_m"><span class="icon">🛏🛏</span> <strong>Pack M</strong><br><small style="font-weight:300;font-size:11px;">T3<br>Vue top + 4 angles</small></label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="pack" id="pack_l" value="Pack L">
+          <label for="pack_l"><span class="icon">🏡</span> <strong>Pack L</strong><br><small style="font-weight:300;font-size:11px;">Maison avec étage<br>Vue top + 4 angles / niveau</small></label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="pack" id="pack_xl" value="Pack XL">
+          <label for="pack_xl"><span class="icon">🏰</span> <strong>Pack XL</strong><br><small style="font-weight:300;font-size:11px;">Grande maison / propriété<br>Sur devis</small></label>
+        </div>
+      </div>
+      <div id="xl-notice" style="display:none; margin-top:12px;" class="info-box">
+        📩 <strong>Pack XL — sur devis.</strong> Après réception de votre brief, je vous envoie un devis personnalisé sous 24h.
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="commentaire_style">Commentaires ou références visuelles <span class="hint">optionnel</span></label>
+      <textarea id="commentaire_style" placeholder="ex : L'ambiance est chaleureuse avec beaucoup de bois. Voici un lien Pinterest qui correspond bien : ..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Retour</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Continuer →</button>
+    </div>
+  </section>
+
+  <!-- SECTION 4 : Contact -->
+  <section class="section" id="section-4">
+    <h2 class="section-title">Vos coordonnées</h2>
+    <p class="section-desc">Pour recevoir votre devis et suivre l'avancement de votre commande.</p>
+
+    <div class="two-col">
+      <div class="field">
+        <label for="prenom">Prénom <span class="required">*</span></label>
+        <input type="text" id="prenom" placeholder="Marie">
+      </div>
+      <div class="field">
+        <label for="nom">Nom <span class="required">*</span></label>
+        <input type="text" id="nom" placeholder="Dupont">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="email">Email <span class="required">*</span></label>
+      <input type="email" id="email" placeholder="marie@example.com">
+    </div>
+
+    <div class="field">
+      <label for="tel">Téléphone <span class="hint">optionnel — uniquement si vous préférez être contacté par SMS</span></label>
+      <input type="tel" id="tel" placeholder="+33 6 00 00 00 00">
+    </div>
+
+    <div class="field">
+      <label for="lien_annonce">Lien vers votre annonce Airbnb actuelle <span class="hint">optionnel</span></label>
+      <input type="text" id="lien_annonce" placeholder="https://www.airbnb.fr/rooms/...">
+    </div>
+
+    <div class="field">
+      <label for="delai">Délai souhaité</label>
+      <select id="delai">
+        <option value="standard">Standard (5–10 jours ouvrés)</option>
+        <option value="urgent">Urgent (2–3 jours — supplément à confirmer)</option>
+        <option value="flexible">Flexible, prenez le temps qu'il faut</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="comment_final">Autre chose à me préciser ? <span class="hint">optionnel</span></label>
+      <textarea id="comment_final" placeholder="Toute info utile que vous n'avez pas pu mentionner ailleurs..."></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Retour</button>
+      <button class="btn btn-primary btn-submit" onclick="submitForm()">Envoyer ma commande ✓</button>
+    </div>
+  </section>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">✓</div>
+    <h2>Brief reçu, merci !</h2>
+    <p>Je reviens vers vous sous <strong>24h ouvrées</strong> pour confirmer votre commande et vous envoyer le lien de paiement.</p>
+    <div class="recap-box" id="recapBox">
+      <h3>Récapitulatif</h3>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentSection = 1;
+  const totalSections = 4;
+  const fileData = { planFiles: [], photoFiles: [] };
+
+  function goTo(n) {
+    document.getElementById('section-' + currentSection).classList.remove('active');
+    document.getElementById('tab-' + currentSection).classList.remove('active');
+    document.getElementById('tab-' + currentSection).classList.add('done');
+
+    currentSection = n;
+    document.getElementById('section-' + n).classList.add('active');
+    document.getElementById('tab-' + n).classList.remove('done');
+    document.getElementById('tab-' + n).classList.add('active');
+
+    const pct = (n / totalSections) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function handleFiles(input, key, listId) {
+    const files = Array.from(input.files);
+    fileData[key] = files;
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    files.forEach((f, i) => {
+      const tag = document.createElement('div');
+      tag.className = 'file-tag';
+      tag.innerHTML = `<span>📎 ${f.name}</span><button class="file-remove" onclick="removeFile('${key}', ${i}, '${listId}')">×</button>`;
+      list.appendChild(tag);
+    });
+  }
+
+  function removeFile(key, index, listId) {
+    fileData[key].splice(index, 1);
+    const list = document.getElementById(listId);
+    const tags = list.querySelectorAll('.file-tag');
+    tags[index].remove();
+  }
+
+  function toggleGroupeFields(isGroupe) {
+    document.getElementById('groupe-notice').style.display = isGroupe ? 'block' : 'none';
+    document.getElementById('groupe-detail-field').style.display = isGroupe ? 'block' : 'none';
+    // Hide/show irrelevant fields for grouped request
+    const fieldsToHide = ['single-bien-fields'];
+    document.getElementById('single-bien-fields').style.display = isGroupe ? 'none' : 'block';
+  }
+
+  // Show XL notice when Pack XL is selected
+  document.addEventListener('change', function(e) {
+    if (e.target.name === 'pack') {
+      const notice = document.getElementById('xl-notice');
+      notice.style.display = e.target.value === 'Pack XL' ? 'block' : 'none';
+    }
+  });
+
+  function submitForm() {
+    const prenom = document.getElementById('prenom').value;
+    const nom = document.getElementById('nom').value;
+    const email = document.getElementById('email').value;
+
+    if (!prenom || !nom || !email) {
+      alert('Merci de renseigner au minimum prénom, nom et email.');
+      return;
+    }
+
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    document.querySelector('.steps-nav').style.display = 'none';
+    document.querySelector('.progress-bar').style.display = 'none';
+
+    // Build recap
+    const typeBien = document.querySelector('input[name="type_bien"]:checked')?.value || '—';
+    const surface = document.getElementById('surface').value || '—';
+    const style = document.querySelector('input[name="style"]:checked')?.value || '—';
+    const pack = document.querySelector('input[name="pack"]:checked')?.value || '—';
+    const delai = document.getElementById('delai').value;
+    const delaiLabel = { standard: 'Standard (5–10 jours)', urgent: 'Urgent (2–3 jours)', flexible: 'Flexible' }[delai];
+
+    const recap = document.getElementById('recapBox');
+    recap.innerHTML = `
+      <h3>Récapitulatif</h3>
+      ${row('Nom', prenom + ' ' + nom)}
+      ${row('Email', email)}
+      ${row('Type de bien', typeBien)}
+      ${row('Surface', surface + ' m²')}
+      ${row('Pack choisi', pack)}
+      ${row('Style', style)}
+      ${row('Délai', delaiLabel)}
+    `;
+
+    document.getElementById('successScreen').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function row(label, val) {
+    return `<div class="recap-line"><span>${label}</span><span>${val}</span></div>`;
+  }
+</script>
+
+</body>
+</html>
