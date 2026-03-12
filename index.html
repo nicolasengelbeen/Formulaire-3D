@@ -623,7 +623,11 @@
         </div>
         <div class="radio-card">
           <input type="radio" name="type_bien" id="t4" value="T4+" onchange="toggleGroupeFields(false)">
-          <label for="t4"><span class="icon">🏡</span> T4+</label>
+          <label for="t4"><span class="icon">🏡</span> T4+ / Maison avec étage</label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="type_bien" id="grande_maison" value="Grande maison / propriété" onchange="toggleGroupeFields(false)">
+          <label for="grande_maison"><span class="icon">🏰</span> Grande maison / propriété <span style="color:var(--accent);font-size:11px;font-weight:500;display:block;">SUR DEVIS</span></label>
         </div>
         <div class="radio-card" style="grid-column: 1 / -1;">
           <input type="radio" name="type_bien" id="groupe" value="Demande groupée" onchange="toggleGroupeFields(true)">
@@ -786,27 +790,16 @@
     </div>
 
     <div class="field">
-      <label>Choisissez votre pack <span class="required">*</span></label>
-      <div class="radio-group" style="grid-template-columns: repeat(2, 1fr);">
-        <div class="radio-card">
-          <input type="radio" name="pack" id="pack_s" value="Pack S">
-          <label for="pack_s"><span class="icon">🏠</span> <strong>Pack S</strong><br><small style="font-weight:300;font-size:11px;">Studio / T2<br>Vue top + 3 angles</small></label>
+      <label>Votre pack</label>
+      <div id="pack-display" style="background:white; border:1.5px solid var(--border); border-radius:8px; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;">
+        <div>
+          <div id="pack-name" style="font-family:'DM Serif Display',serif; font-size:20px; margin-bottom:4px;">—</div>
+          <div id="pack-desc" style="font-size:13px; color:var(--muted);">Sélectionnez votre type de bien à l'étape 1</div>
         </div>
-        <div class="radio-card">
-          <input type="radio" name="pack" id="pack_m" value="Pack M">
-          <label for="pack_m"><span class="icon">🛏🛏</span> <strong>Pack M</strong><br><small style="font-weight:300;font-size:11px;">T3<br>Vue top + 4 angles</small></label>
-        </div>
-        <div class="radio-card">
-          <input type="radio" name="pack" id="pack_l" value="Pack L">
-          <label for="pack_l"><span class="icon">🏡</span> <strong>Pack L</strong><br><small style="font-weight:300;font-size:11px;">Maison avec étage<br>Vue top + 4 angles / niveau</small></label>
-        </div>
-        <div class="radio-card">
-          <input type="radio" name="pack" id="pack_xl" value="Pack XL">
-          <label for="pack_xl"><span class="icon">🏰</span> <strong>Pack XL</strong><br><small style="font-weight:300;font-size:11px;">Grande maison / propriété<br>Sur devis</small></label>
-        </div>
+        <div id="pack-price" style="font-size:22px; font-weight:500; color:var(--accent); white-space:nowrap;">—</div>
       </div>
-      <div id="xl-notice" style="display:none; margin-top:12px;" class="info-box">
-        📩 <strong>Pack XL — sur devis.</strong> Après réception de votre brief, je vous envoie un devis personnalisé sous 24h.
+      <div id="devis-notice" style="display:none; margin-top:12px;" class="info-box">
+        📩 <strong>Sur devis.</strong> Après réception de votre brief, je vous envoie une offre personnalisée sous 24h.
       </div>
     </div>
 
@@ -933,11 +926,28 @@
     document.getElementById('single-bien-fields').style.display = isGroupe ? 'none' : 'block';
   }
 
-  // Show XL notice when Pack XL is selected
+  const packMap = {
+    'Studio':              { name: 'Pack S', desc: 'Vue top + 3 angles', price: '249€' },
+    'T2':                  { name: 'Pack S', desc: 'Vue top + 3 angles', price: '249€' },
+    'T3':                  { name: 'Pack M', desc: 'Vue top + 4 angles', price: '399€' },
+    'T4+':                 { name: 'Pack L', desc: 'Vue top + 4 angles / niveau', price: '649€' },
+    'Grande maison / propriété': { name: 'Pack XL', desc: 'Sur devis', price: 'Sur devis' },
+    'Demande groupée':     { name: 'Pack XL', desc: 'Sur devis', price: 'Sur devis' },
+  };
+
+  // Auto-update pack display when type_bien changes
   document.addEventListener('change', function(e) {
-    if (e.target.name === 'pack') {
-      const notice = document.getElementById('xl-notice');
-      notice.style.display = e.target.value === 'Pack XL' ? 'block' : 'none';
+    if (e.target.name === 'type_bien') {
+      const val = e.target.value;
+      const pack = packMap[val];
+      if (pack) {
+        document.getElementById('pack-name').textContent = pack.name;
+        document.getElementById('pack-desc').textContent = pack.desc;
+        document.getElementById('pack-price').textContent = pack.price;
+        const isDevis = pack.price === 'Sur devis';
+        document.getElementById('pack-price').style.color = isDevis ? 'var(--muted)' : 'var(--accent)';
+        document.getElementById('devis-notice').style.display = isDevis ? 'block' : 'none';
+      }
     }
   });
 
@@ -960,7 +970,8 @@
     const typeBien = document.querySelector('input[name="type_bien"]:checked')?.value || '—';
     const surface = document.getElementById('surface').value || '—';
     const style = document.querySelector('input[name="style"]:checked')?.value || '—';
-    const pack = document.querySelector('input[name="pack"]:checked')?.value || '—';
+    const packInfo = packMap[typeBien];
+    const pack = packInfo ? `${packInfo.name} — ${packInfo.price}` : '—';
     const delai = document.getElementById('delai').value;
     const delaiLabel = { standard: 'Standard (5–10 jours)', urgent: 'Urgent (2–3 jours)', flexible: 'Flexible' }[delai];
 
