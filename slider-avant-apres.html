@@ -14,8 +14,8 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    font-family: 'DM Sans', Arial, sans-serif;
-    padding: 32px 16px;
+    font-family: Arial, sans-serif;
+    padding: 32px 0;
   }
 
   .section-label {
@@ -25,6 +25,7 @@
     text-transform: uppercase;
     color: #c8622a;
     margin-bottom: 12px;
+    text-align: center;
   }
 
   h2 {
@@ -42,77 +43,133 @@
     text-align: center;
   }
 
-  /* CONTAINER SLIDER */
+  /* Conteneur principal */
   .slider-outer {
     position: relative;
     width: 100%;
-    max-width: 860px;
-    aspect-ratio: 1 / 1;
+    max-width: 100%;
+    height: 700px;
     background: #f7f4ef;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-  }
-
-  .slider-wrap {
-    position: relative;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
-    border-radius: 8px;
     cursor: ew-resize;
     user-select: none;
   }
 
-  /* IMAGE APRÈS (fond) */
-  .img-after {
+  /* Les deux panels occupent exactement le même espace */
+  .panel {
     position: absolute;
-    inset: 0;
+    inset: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* PANEL AVANT : 3 petites photos en haut + 2 grands rendus en bas */
+  #panelAvant {
+    justify-content: flex-start;
+  }
+
+  #panelAvant .photos-row img {
+    height: 110px;
+    flex: 1;
+    width: 0;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  #panelAvant .rendus-row {
+    flex: 1;
+    display: flex;
+    gap: 12px;
+  }
+
+  #panelAvant .rendus-row img {
+    flex: 1;
+    width: 0;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f7f4ef;
+  }
+
+  /* PANEL APRÈS : 3 grandes photos centrées */
+  #panelApres {
+    justify-content: center;
+    clip-path: inset(0 0 0 100%);
+    background: #f7f4ef;
+  }
+
+  #panelApres .photos-row img {
+    height: 200px;
+    flex: 1;
+    width: 0;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .photos-row {
+    display: flex;
+    gap: 12px;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    display: block;
   }
 
-  /* IMAGE AVANT (révélée par clip) */
-  .img-before-wrap {
+  .rendus-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c8622a;
+  }
+
+  /* Étiquettes Avant / Après */
+  .label {
     position: absolute;
-    inset: 0;
-    overflow: hidden;
-    width: 50%; /* contrôlé par JS */
-    background: white;
+    top: 34px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 20;
+    transition: opacity 0.3s;
   }
 
-  .img-before-wrap img {
-    position: absolute;
-    top: 0; left: 0;
-    width: var(--full-width, 860px);
-    max-width: none;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    display: block;
+  #labelAvant {
+    left: 34px;
+    background: rgba(26, 22, 18, 0.65);
+    color: white;
   }
 
-  /* LIGNE CENTRALE */
+  #labelApres {
+    background: rgba(200, 98, 42, 0.85);
+    color: white;
+    opacity: 0;
+    left: 34px;
+  }
+
+  /* Ligne de séparation */
   .divider {
     position: absolute;
     top: 0;
-    left: 50%; /* contrôlé par JS */
     width: 2px;
     height: 100%;
     background: white;
     transform: translateX(-50%);
     pointer-events: none;
-    transition: none;
+    z-index: 15;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
-  /* BOUTON CENTRAL */
+  /* Poignée */
   .handle {
     position: absolute;
     top: 50%;
-    left: 50%; /* contrôlé par JS */
     transform: translate(-50%, -50%);
     width: 44px;
     height: 44px;
@@ -123,41 +180,13 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    z-index: 10;
+    z-index: 20;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
 
-  .handle svg {
-    width: 20px;
-    height: 20px;
-  }
+  .handle svg { width: 20px; height: 20px; }
 
-  /* ÉTIQUETTES */
-  .label {
-    position: absolute;
-    top: 16px;
-    padding: 6px 14px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  .label-before {
-    left: 16px;
-    background: rgba(26, 22, 18, 0.65);
-    color: white;
-  }
-
-  .label-after {
-    right: 16px;
-    background: rgba(200, 98, 42, 0.85);
-    color: white;
-  }
-
-  /* HINT MOBILE */
   .hint {
     margin-top: 16px;
     font-size: 12px;
@@ -170,42 +199,52 @@
 </head>
 <body>
 
-
-
 <p class="section-label">La différence en un geste</p>
 <h2>Voyez ce que vos visiteurs voient vraiment</h2>
-<p class="subtitle">Glissez pour comparer une annonce classique et un plan 3D TonRendu3D</p>
+<p class="subtitle">Glissez pour comparer une annonce classique et une annonce enrichie avec nos plans 3D</p>
 
-<div class="slider-outer">
-<div class="slider-wrap" id="slider">
+<div class="slider-outer" id="sliderOuter">
 
-  <!-- =============================================
-       REMPLACEZ CES DEUX URLs PAR VOS IMAGES
-       - img-after  = votre rendu 3D (l'Après)
-       - img-before = photo classique de l'annonce (l'Avant)
-  ============================================= -->
+  <!-- Étiquettes -->
+  <div class="label" id="labelAvant">Avant</div>
+  <div class="label" id="labelApres">Après</div>
 
-  <!-- IMAGE APRÈS (rendu 3D) -->
-  <img class="img-after" src="https://nicolasengelbeen.github.io/Formulaire-3D/Rendu1.png" alt="Après — Plan 3D TonRendu3D">
-
-  <div class="img-before-wrap" id="beforeWrap">
-    <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Avant — Photo classique" id="imgBefore">
-  </div>
-
-  <!-- LIGNE + POIGNÉE -->
+  <!-- Ligne + poignée -->
   <div class="divider" id="divider"></div>
   <div class="handle" id="handle">
-    <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 20 20" fill="none">
       <path d="M7 5L3 10L7 15" stroke="#c8622a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M13 5L17 10L13 15" stroke="#c8622a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
 
-  <!-- ÉTIQUETTES -->
-  <div class="label label-before">Avant</div>
-  <div class="label label-after">Après</div>
+  <!-- ===================== PANEL AVANT (fond) =====================
+       3 petites photos en haut + 2 grands rendus 3D en bas
+  ================================================================ -->
+  <div class="panel" id="panelAvant">
+    <div class="photos-row">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 1">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 2">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 3">
+    </div>
+    <div class="rendus-label">+ Nos plans 3D</div>
+    <div class="rendus-row">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Rendu1.png" alt="Rendu 3D 1">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Rendu1.png" alt="Rendu 3D 2">
+    </div>
+  </div>
 
-</div>
+  <!-- ===================== PANEL APRÈS (par-dessus, clip depuis droite) =====================
+       3 grandes photos de l'annonce classique, centrées verticalement
+  ========================================================================================== -->
+  <div class="panel" id="panelApres">
+    <div class="photos-row">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 1">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 2">
+      <img src="https://nicolasengelbeen.github.io/Formulaire-3D/Annoncebasique.jpg" alt="Photo 3">
+    </div>
+  </div>
+
 </div>
 
 <p class="hint">
@@ -214,83 +253,75 @@
 </p>
 
 <script>
-  const slider   = document.getElementById('slider');
-  const beforeWrap = document.getElementById('beforeWrap');
-  const imgBefore  = document.getElementById('imgBefore');
-  const divider  = document.getElementById('divider');
-  const handle   = document.getElementById('handle');
+  const outer      = document.getElementById('sliderOuter');
+  const panelApres = document.getElementById('panelApres');
+  const divider    = document.getElementById('divider');
+  const handle     = document.getElementById('handle');
+  const labelAvant = document.getElementById('labelAvant');
+  const labelApres = document.getElementById('labelApres');
 
-  let pos = 50;
+  let pct = 0;
   let dragging = false;
   let animDone = false;
 
-  function setPos(pct) {
-    pct = Math.max(2, Math.min(98, pct));
-    pos = pct;
-    beforeWrap.style.width = pct + '%';
-    divider.style.left     = pct + '%';
-    handle.style.left      = pct + '%';
-    imgBefore.style.width  = slider.offsetWidth + 'px';
+  function setPos(p) {
+    p = Math.max(0, Math.min(100, p));
+    pct = p;
+
+    // Le panel "après" est révélé de gauche à droite
+    // clip-path: inset(0 droite 0 gauche) — on réduit "droite" pour révéler
+    const right = 100 - p;
+    panelApres.style.clipPath = `inset(0 ${right}% 0 0)`;
+
+    // Position divider et handle
+    const innerW = outer.clientWidth - 48;
+    const px = 24 + (p / 100) * innerW;
+    divider.style.left = px + 'px';
+    handle.style.left  = px + 'px';
+
+    // Étiquette "Après" suit le slider
+    labelApres.style.left = Math.min(px + 10, outer.clientWidth - 100) + 'px';
+
+    // Visibilité
+    const started = p > 2;
+    divider.style.opacity    = started ? '1' : '0';
+    handle.style.opacity     = started ? '1' : '0';
+    labelApres.style.opacity = started ? '1' : '0';
+    labelAvant.style.opacity = p > 90 ? '0' : '1';
   }
 
-  function getPct(clientX) {
-    const rect = slider.getBoundingClientRect();
-    return ((clientX - rect.left) / rect.width) * 100;
+  function getP(clientX) {
+    const rect = outer.getBoundingClientRect();
+    return Math.max(0, Math.min(100, ((clientX - rect.left - 24) / (rect.width - 48)) * 100));
   }
 
-  // — Mouse —
-  slider.addEventListener('mousedown', e => {
-    dragging = true;
-    animDone = true;
-    setPos(getPct(e.clientX));
-  });
-  window.addEventListener('mousemove', e => {
-    if (dragging) setPos(getPct(e.clientX));
-  });
+  // Mouse
+  outer.addEventListener('mousedown', e => { dragging = true; animDone = true; setPos(getP(e.clientX)); });
+  window.addEventListener('mousemove', e => { if (dragging) setPos(getP(e.clientX)); });
   window.addEventListener('mouseup', () => { dragging = false; });
 
-  // — Touch —
-  slider.addEventListener('touchstart', e => {
-    dragging = true;
-    animDone = true;
-    setPos(getPct(e.touches[0].clientX));
-  }, { passive: true });
-  window.addEventListener('touchmove', e => {
-    if (dragging) setPos(getPct(e.touches[0].clientX));
-  }, { passive: true });
+  // Touch
+  outer.addEventListener('touchstart', e => { dragging = true; animDone = true; setPos(getP(e.touches[0].clientX)); }, { passive: true });
+  window.addEventListener('touchmove', e => { if (dragging) setPos(getP(e.touches[0].clientX)); }, { passive: true });
   window.addEventListener('touchend', () => { dragging = false; });
 
-  // — Animation automatique au chargement —
-  // Démarre au milieu (50%), glisse vers 85% (révèle l'Après), puis s'arrête
+  // Animation auto : part de 0 (tout à gauche = Avant) et glisse vers 70% (révèle l'Après)
   function autoAnimate() {
-    if (animDone) return;
-    const target = 85;
-    const duration = 1800; // ms
+    const duration = 2200;
     const start = performance.now();
-    const startPos = 50;
-
     function step(now) {
       if (animDone) return;
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      // Easing ease-in-out
-      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-      setPos(startPos + (target - startPos) * ease);
+      const t = Math.min((now - start) / duration, 1);
+      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      setPos(ease * 70);
       if (t < 1) requestAnimationFrame(step);
     }
-
-    // Petite pause avant de démarrer l'animation
-    setTimeout(() => {
-      if (!animDone) requestAnimationFrame(step);
-    }, 800);
+    setTimeout(() => { if (!animDone) requestAnimationFrame(step); }, 800);
   }
 
-  // Init
-  setPos(50);
+  setPos(0);
   autoAnimate();
-
-  // Recalcul si resize
-  window.addEventListener('resize', () => setPos(pos));
+  window.addEventListener('resize', () => setPos(pct));
 </script>
 
 </body>
