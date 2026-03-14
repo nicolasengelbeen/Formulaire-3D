@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comment ça marche — TonRendu3D</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f7f4ef;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    padding: 60px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c8622a;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    color: #1a1612;
+    text-align: center;
+    margin-bottom: 56px;
+    line-height: 1.2;
+  }
+
+  /* GRILLE 3 ÉTAPES */
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    position: relative;
+  }
+
+  @media (max-width: 640px) {
+    .steps { grid-template-columns: 1fr; }
+    .arrow { display: none; }
+  }
+
+  /* FLÈCHE ENTRE LES ÉTAPES */
+  .step-wrap {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .step-wrap:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #c8622a;
+    opacity: 0.5;
+    z-index: 2;
+  }
+
+  @media (max-width: 640px) {
+    .step-wrap:not(:last-child)::after { display: none; }
+  }
+
+  /* CARTE ÉTAPE */
+  .step {
+    background: white;
+    border-radius: 16px;
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  .step:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+
+  /* NUMÉRO */
+  .step-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1a1612;
+    color: white;
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ICÔNE */
+  .step-icon {
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  /* TEXTE */
+  .step-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #1a1612;
+    line-height: 1.3;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: #8a8178;
+    line-height: 1.7;
+  }
+
+  /* DÉLAI EN BAS */
+  .step-delay {
+    margin-top: auto;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c8622a;
+    background: #f0ddd2;
+    padding: 5px 12px;
+    border-radius: 100px;
+  }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-wrap:nth-child(1) .step { animation: fadeUp 0.4s ease 0.0s both; }
+  .step-wrap:nth-child(2) .step { animation: fadeUp 0.4s ease 0.15s both; }
+  .step-wrap:nth-child(3) .step { animation: fadeUp 0.4s ease 0.3s both; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <p class="section-label">Le processus</p>
+  <h2 class="section-title">Comment ça marche ?</h2>
+
+  <div class="steps">
+
+    <!-- ÉTAPE 1 -->
+    <div class="step-wrap">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-icon">📐</div>
+        <div class="step-title">Vous nous envoyez vos plans</div>
+        <div class="step-desc">Plan PDF, cotes en photo ou relevé de votre logement — nous nous adaptons à ce que vous avez.</div>
+        <div class="step-delay">Jour 1</div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 -->
+    <div class="step-wrap">
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-icon">🖥️</div>
+        <div class="step-title">Nous modélisons votre logement</div>
+        <div class="step-desc">Nous créons votre plan 3D avec un ameublement fidèle à votre logement, depuis notre atelier.</div>
+        <div class="step-delay">Jours 2 — 9</div>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 3 -->
+    <div class="step-wrap">
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-icon">📸</div>
+        <div class="step-title">Vous recevez vos visuels PNG</div>
+        <div class="step-desc">Vue du dessus + vues angulées en haute résolution, prêts à intégrer dans votre annonce.</div>
+        <div class="step-delay">Jour 10 max</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
