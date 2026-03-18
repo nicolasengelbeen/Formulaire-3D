@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos tarifs — TonRendu3D</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f7f4ef;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    padding: 60px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c8622a;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    color: #1a1612;
+    text-align: center;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .section-sub {
+    font-size: 15px;
+    color: #8a8178;
+    text-align: center;
+    margin-bottom: 56px;
+    max-width: 520px;
+  }
+
+  /* GRILLE */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  /* CARTE */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 2px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  }
+
+  .card.featured {
+    background: #1a1612;
+    border-color: #c8622a;
+  }
+
+  .card.devis {
+    background: #f0ece4;
+    border: 2px dashed #d8d2c8;
+  }
+
+  /* BADGE POPULAIRE */
+  .badge-popular {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #c8622a;
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ICÔNE */
+  .card-icon { font-size: 32px; line-height: 1; }
+
+  /* TYPE */
+  .card-type {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #1a1612;
+  }
+
+  .card.featured .card-type { color: #f7f4ef; }
+  .card.devis .card-type { color: #1a1612; }
+
+  /* FOURCHETTE */
+  .card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .price-from {
+    font-size: 13px;
+    color: #8a8178;
+  }
+
+  .card.featured .price-from { color: #a09890; }
+
+  .price-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 38px;
+    color: #c8622a;
+    line-height: 1;
+  }
+
+  .price-to {
+    font-size: 14px;
+    color: #8a8178;
+  }
+
+  .card.featured .price-to { color: #a09890; }
+
+  .price-devis {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #8a8178;
+    font-style: italic;
+  }
+
+  /* DESCRIPTION */
+  .card-desc {
+    font-size: 13px;
+    color: #8a8178;
+    line-height: 1.6;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0ece4;
+  }
+
+  .card.featured .card-desc { color: #a09890; border-bottom-color: rgba(255,255,255,0.1); }
+
+  /* LISTE */
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .card-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #5a5450;
+    line-height: 1.5;
+  }
+
+  .card.featured .card-list-item { color: #b0a99e; }
+  .card.devis .card-list-item { color: #5a5450; }
+
+  .check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #f0ddd2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    color: #c8622a;
+    margin-top: 1px;
+  }
+
+  .card.featured .check {
+    background: rgba(200,98,42,0.3);
+    color: #e07840;
+  }
+
+  /* BOUTON */
+  .card-btn {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: auto;
+  }
+
+  .card:not(.featured):not(.devis) .card-btn {
+    background: #f0ece4;
+    color: #1a1612;
+  }
+
+  .card:not(.featured):not(.devis) .card-btn:hover {
+    background: #1a1612;
+    color: white;
+  }
+
+  .card.featured .card-btn {
+    background: #c8622a;
+    color: white;
+  }
+
+  .card.featured .card-btn:hover {
+    background: #e07840;
+  }
+
+  .card.devis .card-btn {
+    background: #1a1612;
+    color: white;
+  }
+
+  .card.devis .card-btn:hover {
+    background: #c8622a;
+  }
+
+  /* OPTIONS */
+  .options-section {
+    width: 100%;
+    max-width: 1100px;
+    background: white;
+    border-radius: 16px;
+    padding: 32px 36px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    margin-bottom: 40px;
+  }
+
+  .options-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #1a1612;
+    margin-bottom: 20px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f7f4ef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .option-name { color: #5a5450; }
+  .option-price { font-weight: 500; color: #c8622a; }
+
+  /* NOTE */
+  .note {
+    font-size: 13px;
+    color: #b0a99e;
+    text-align: center;
+    max-width: 600px;
+  }
+
+  /* ANIMATION */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:nth-child(1) { animation: fadeUp 0.4s ease 0.0s both; }
+  .card:nth-child(2) { animation: fadeUp 0.4s ease 0.1s both; }
+  .card:nth-child(3) { animation: fadeUp 0.4s ease 0.2s both; }
+  .card:nth-child(4) { animation: fadeUp 0.4s ease 0.3s both; }
+</style>
+</head>
+<body>
+
+<p class="section-label">Tarifs transparents</p>
+<h2 class="section-title">Une offre adaptée à chaque logement</h2>
+<p class="section-sub">Tous nos plans incluent une vue du dessus + vues angulées en haute résolution, livrés en PNG prêts à publier.</p>
+
+<div class="grid">
+
+  <!-- APPARTEMENT -->
+  <div class="card">
+    <div class="card-icon">🏢</div>
+    <div class="card-type">Appartement</div>
+    <div class="card-price">
+      <span class="price-from">à partir de</span>
+      <span class="price-value">249€</span>
+      <span class="price-to">→ 624€+</span>
+    </div>
+    <div class="card-desc">Studio, T2, T3, T4+ — prix selon le nombre de chambres</div>
+    <div class="card-list">
+      <div class="card-list-item"><div class="check">✓</div> Vue top + 3 vues angulées</div>
+      <div class="card-list-item"><div class="check">✓</div> Ameublement fidèle à votre logement</div>
+      <div class="card-list-item"><div class="check">✓</div> PNG haute résolution</div>
+      <div class="card-list-item"><div class="check">✓</div> Livraison sous 10 jours</div>
+    </div>
+    <a class="card-btn" href="https://nicolasengelbeen.github.io/Formulaire-3D/index.html" target="_blank">Commander</a>
+  </div>
+
+  <!-- MAISON — FEATURED -->
+  <div class="card featured">
+    <div class="badge-popular">⭐ Le plus demandé</div>
+    <div class="card-icon">🏡</div>
+    <div class="card-type">Maison</div>
+    <div class="card-price">
+      <span class="price-from">à partir de</span>
+      <span class="price-value">300€</span>
+      <span class="price-to">→ 850€</span>
+    </div>
+    <div class="card-desc">Plain-pied ou avec étage(s) — prix selon la complexité</div>
+    <div class="card-list">
+      <div class="card-list-item"><div class="check">✓</div> Vue top + 4 vues angulées</div>
+      <div class="card-list-item"><div class="check">✓</div> Rendu par niveau si plusieurs étages</div>
+      <div class="card-list-item"><div class="check">✓</div> PNG haute résolution</div>
+      <div class="card-list-item"><div class="check">✓</div> Livraison sous 10 jours</div>
+    </div>
+    <a class="card-btn" href="https://nicolasengelbeen.github.io/Formulaire-3D/index.html" target="_blank">Commander</a>
+  </div>
+
+  <!-- VILLA -->
+  <div class="card">
+    <div class="card-icon">🏰</div>
+    <div class="card-type">Villa / Propriété</div>
+    <div class="card-price">
+      <span class="price-from">à partir de</span>
+      <span class="price-value">450€</span>
+      <span class="price-to">→ 1 000€+</span>
+    </div>
+    <div class="card-desc">Grande villa, propriété avec dépendances ou espaces extérieurs</div>
+    <div class="card-list">
+      <div class="card-list-item"><div class="check">✓</div> Vue top + 4 vues angulées</div>
+      <div class="card-list-item"><div class="check">✓</div> Espaces extérieurs inclus sur option</div>
+      <div class="card-list-item"><div class="check">✓</div> PNG haute résolution</div>
+      <div class="card-list-item"><div class="check">✓</div> Livraison sous 10 jours</div>
+    </div>
+    <a class="card-btn" href="https://nicolasengelbeen.github.io/Formulaire-3D/index.html" target="_blank">Commander</a>
+  </div>
+
+  <!-- SUR DEVIS -->
+  <div class="card devis">
+    <div class="card-icon">🏘️</div>
+    <div class="card-type">Grande propriété & multi-biens</div>
+    <div class="card-price">
+      <span class="price-devis">Sur devis</span>
+    </div>
+    <div class="card-desc">Grande propriété complexe ou commande groupée de plusieurs logements — offre personnalisée</div>
+    <div class="card-list">
+      <div class="card-list-item"><div class="check">✓</div> Offre personnalisée sous 24h</div>
+      <div class="card-list-item"><div class="check">✓</div> Remise volume pour 2+ biens</div>
+      <div class="card-list-item"><div class="check">✓</div> Accompagnement dédié</div>
+      <div class="card-list-item"><div class="check">✓</div> Délai adapté à votre projet</div>
+    </div>
+    <a class="card-btn" href="https://nicolasengelbeen.github.io/Formulaire-3D/index.html" target="_blank">Demander un devis</a>
+  </div>
+
+</div>
+
+<!-- OPTIONS -->
+<div class="options-section">
+  <div class="options-title">Options disponibles sur tous les packs</div>
+  <div class="options-grid">
+    <div class="option-item">
+      <span class="option-name">🚀 Délai urgent (2-3 jours)</span>
+      <span class="option-price">+99€</span>
+    </div>
+    <div class="option-item">
+      <span class="option-name">🌿 Terrasse / balcon / jardin</span>
+      <span class="option-price">+30€</span>
+    </div>
+    <div class="option-item">
+      <span class="option-name">🏊 Piscine / espaces extérieurs</span>
+      <span class="option-price">+99€</span>
+    </div>
+  </div>
+</div>
+
+<p class="note">💳 Paiement sécurisé après validation du devis. Tous les prix sont en TTC.</p>
+
+</body>
+</html>
