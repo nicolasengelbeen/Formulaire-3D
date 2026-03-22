@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tunnel de vente — TonRendu3D</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f7f4ef;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ====== PARTIE 1 — LE PROBLÈME (fond sombre) ====== */
+  .problem-section {
+    background: #1a1612;
+    padding: 72px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .problem-section::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: #c8622a;
+    opacity: 0.06;
+  }
+
+  .problem-section::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: #c8622a;
+    opacity: 0.04;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c8622a;
+    margin-bottom: 16px;
+  }
+
+  .problem-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    color: #f7f4ef;
+    line-height: 1.2;
+    max-width: 700px;
+    margin: 0 auto 16px;
+  }
+
+  .problem-title em { font-style: italic; color: #e8a882; }
+
+  .problem-sub {
+    font-size: 16px;
+    color: #8a8178;
+    max-width: 520px;
+    margin: 0 auto 56px;
+    line-height: 1.7;
+  }
+
+  /* STATS PROBLÈME */
+  .problem-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .problem-stat {
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .problem-stat:nth-child(1) { animation-delay: 0.1s; }
+  .problem-stat:nth-child(2) { animation-delay: 0.25s; }
+  .problem-stat:nth-child(3) { animation-delay: 0.4s; }
+
+  .problem-stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    color: #c8622a;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .problem-stat-label {
+    font-size: 13px;
+    color: #8a8178;
+    line-height: 1.5;
+    max-width: 140px;
+    margin: 0 auto;
+  }
+
+  /* ====== TRANSITION ====== */
+  .transition-block {
+    background: #c8622a;
+    padding: 28px 24px;
+    text-align: center;
+  }
+
+  .transition-block p {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(18px, 3vw, 24px);
+    color: white;
+    font-style: italic;
+    max-width: 640px;
+    margin: 0 auto;
+    line-height: 1.4;
+  }
+
+  /* ====== PARTIE 2 — LA SOLUTION ====== */
+  .solution-section {
+    background: #f7f4ef;
+    padding: 72px 24px;
+  }
+
+  .solution-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .solution-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    color: #1a1612;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .solution-title em { font-style: italic; color: #c8622a; }
+
+  .solution-sub {
+    font-size: 15px;
+    color: #8a8178;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 56px;
+    line-height: 1.7;
+  }
+
+  /* ÉTAPES SOLUTION */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    background: white;
+    border-radius: 14px;
+    padding: 28px 32px;
+    border: 1.5px solid #e8e2d8;
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideIn 0.5s ease forwards;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .step:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+
+  .step:nth-child(1) { animation-delay: 0.1s; }
+  .step:nth-child(2) { animation-delay: 0.2s; }
+  .step:nth-child(3) { animation-delay: 0.3s; }
+  .step:nth-child(4) { animation-delay: 0.4s; }
+
+  .step-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: #f0ece4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .step.accent .step-icon-wrap {
+    background: #c8622a;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #b0a99e;
+    margin-bottom: 4px;
+  }
+
+  .step.accent .step-label { color: #e07840; }
+
+  .step-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 19px;
+    color: #1a1612;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: #8a8178;
+    line-height: 1.7;
+  }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    background: #f0ddd2;
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #c8622a;
+  }
+
+  /* ====== PARTIE 3 — RÉSULTAT ====== */
+  .result-section {
+    background: #1a1612;
+    padding: 72px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-section::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: #c8622a;
+    opacity: 0.08;
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c8622a;
+    margin-bottom: 16px;
+  }
+
+  .result-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 4vw, 40px);
+    color: #f7f4ef;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .result-title em { color: #e8a882; font-style: italic; }
+
+  .result-sub {
+    font-size: 15px;
+    color: #8a8178;
+    max-width: 480px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  .result-numbers {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .result-number { text-align: center; }
+
+  .result-number-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 56px;
+    color: #c8622a;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-number-label {
+    font-size: 13px;
+    color: #8a8178;
+    max-width: 130px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .result-source {
+    font-size: 11px;
+    color: #5a5450;
+    margin-bottom: 40px;
+    font-style: italic;
+  }
+
+  .result-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #c8622a;
+    color: white;
+    padding: 16px 36px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .result-cta:hover {
+    background: #e07840;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200,98,42,0.35);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (max-width: 600px) {
+    .problem-stats { gap: 32px; }
+    .result-numbers { gap: 32px; }
+    .step { padding: 20px; }
+    .problem-stat-value { font-size: 40px; }
+    .result-number-value { font-size: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== PARTIE 1 — CRÉER LE BESOIN ====== -->
+<div class="problem-section">
+  <p class="section-label">La réalité du marché</p>
+  <h2 class="problem-title">Vous passez à côté<br>de <em>nombreuses réservations.</em><br>Sans le savoir.</h2>
+  <p class="problem-sub">Vos photos sont belles. Votre logement est top. Pourtant, des voyageurs partent chez vos concurrents. Pourquoi ? Parce qu'ils n'ont pas réussi à se projeter dans votre annonce.</p>
+
+  <div class="problem-stats">
+    <div class="problem-stat">
+      <div class="problem-stat-value">73%</div>
+      <div class="problem-stat-label">des voyageurs quittent une annonce faute de clarté sur l'espace</div>
+    </div>
+    <div class="problem-stat">
+      <div class="problem-stat-value">-45%</div>
+      <div class="problem-stat-label">de clics sur les annonces sans plan de logement</div>
+    </div>
+    <div class="problem-stat">
+      <div class="problem-stat-value">82%</div>
+      <div class="problem-stat-label">des voyageurs jugent le plan décisif dans leur choix</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TRANSITION ====== -->
+<div class="transition-block">
+  <p>"Un voyageur qui ne comprend pas votre logement ne réserve pas. C'est aussi simple que ça."</p>
+</div>
+
+<!-- ====== PARTIE 2 — LA SOLUTION ====== -->
+<div class="solution-section">
+  <div class="solution-inner">
+
+    <h2 class="solution-title">La solution ?<br><em>Un plan 3D qui parle à la place de vos photos.</em></h2>
+    <p class="solution-sub">En un coup d'œil, votre futur locataire comprend tout. Et quand il comprend — il réserve.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-icon-wrap">👁️</div>
+        <div class="step-content">
+          <div class="step-label">Le problème qu'on résout</div>
+          <div class="step-title">Les photos ne suffisent plus</div>
+          <div class="step-desc">Les photos montrent l'ambiance, mais pas l'agencement. "Où est la chambre par rapport au salon ? Est-ce que c'est open space ? Combien de salles de bain ?" — autant de questions sans réponse qui font fuir vos visiteurs.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon-wrap">📐</div>
+        <div class="step-content">
+          <div class="step-label">Notre intervention</div>
+          <div class="step-title">Nous modélisons votre logement en 3D</div>
+          <div class="step-desc">En quelques jours, nous créons un plan 3D axonométrique fidèle à votre bien — meublé, précis, clair. Votre visiteur voit l'espace comme s'il y était déjà. Il se projette instantanément.</div>
+        </div>
+      </div>
+
+      <div class="step accent">
+        <div class="step-icon-wrap">📈</div>
+        <div class="step-content">
+          <div class="step-label">Ce qui se passe ensuite</div>
+          <div class="step-title">Vos clics et vos réservations augmentent</div>
+          <div class="step-desc">Un visiteur qui se projette clique. Un visiteur qui clique réserve. C'est mécanique. Les annonces avec un plan 3D se démarquent dans un marché saturé et captent l'attention là où les autres la perdent.</div>
+          <div class="step-badge">📊 +45% de clics · +15% de réservations</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-icon-wrap">🏆</div>
+        <div class="step-content">
+          <div class="step-label">L'avantage durable</div>
+          <div class="step-title">Vous prenez une longueur d'avance</div>
+          <div class="step-desc">Le plan 3D est encore rare sur le marché francophone. Ceux qui l'adoptent aujourd'hui construisent un avantage concurrentiel que leurs voisins n'ont pas — et ne rattrapent pas facilement.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== RÉSULTAT FINAL ====== -->
+<div class="result-section">
+  <p class="result-label">Le résultat concret</p>
+  <h2 class="result-title">Plus de clarté.<br><em>Plus de réservations.</em></h2>
+  <p class="result-sub">Des chiffres réels, mesurés sur des annonces réelles.</p>
+
+  <div class="result-numbers">
+    <div class="result-number">
+      <div class="result-number-value">+45%</div>
+      <div class="result-number-label">de clics sur votre annonce</div>
+    </div>
+    <div class="result-number">
+      <div class="result-number-value">+12%</div>
+      <div class="result-number-label">de revenus mensuels en moyenne</div>
+    </div>
+    <div class="result-number">
+      <div class="result-number-value">3x</div>
+      <div class="result-number-label">moins de questions avant réservation</div>
+    </div>
+  </div>
+
+  <p class="result-source">Source : étude Locabnb sur 500 annonces Airbnb</p>
+
+  <a href="https://tonrendu3d.odoo.com/mon-devis-personnalise-1" class="result-cta">
+    Obtenir mon devis gratuit →
+  </a>
+</div>
+
+</body>
+</html>
